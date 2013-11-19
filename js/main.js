@@ -20,6 +20,8 @@ window.onload = function(){
 			this.currentElement = document.getElementsByClassName("elem" + this._id)[0];
 		}
 	},
+	score = 0,
+	quantity = 0,
 	elem = {};
 	var Killer = function(_id, _class, leftPoint, topPoint, column){
 		this._id = _id;
@@ -27,10 +29,16 @@ window.onload = function(){
 		this.startLeft = leftPoint;
 		this.startTop = topPoint;
 		this.column = 3;
+		this.destroy = function(){
+			this.currentElement.parentNode.removeChild(this.currentElement);
+			delete this;	
+		}
 		this.shut = function(){
+			console.log(quantity);
+			
 			try{
 				var tempArr = "";
-			var targetShip = "";
+				var targetShip = "";
 			for(var el in elem){
 				if(this.column == elem[el].column){
 					tempArr = elem[el].row;	
@@ -43,6 +51,12 @@ window.onload = function(){
 					elem[el].destroy();
 				}
 			}
+			if(quantity <= 0){
+				alert("you win\n" + "your score" + score);
+				init();
+				kill.destroy();
+			}
+			console.log("scrore" + score);
 		}catch(e){
 			console.log(e);
 		}
@@ -72,23 +86,38 @@ window.onload = function(){
 		this.startTop = topPoint;
 		this.column = column;
 		this.row = row;
+		this.score = 150;
+		this.updateResult = function(){
+			score += this.score;
+		};
 		this.destroy = function(idn){
 			this.currentElement.parentNode.removeChild(this.currentElement);
 			delete elem[_id];	
-		}
+			this.updateResult();
+			quantity--;
+		};
 		this.getId = function(column, row){
 			if(this.column == column && this.row == row){
 				return this._id;
 			}
+		};
+		this.moveDown = function(){
+			console.log(this.startTop);
+			// console.log("yes");
+			// this.startTop = "180px";
+			
 		}
-		
+		setInterval(this.moveDown,1500);
+		// setTimeout(this.moveDown, 1500);
 	}
 	Ship.prototype = new Machine();
 
-	var kill =  new Killer("killer", "killer", 90, 300, 3);
-	kill.createElement();
+	
 
-	for(var i = 0, leftPoint = 0, topPoint = 0, elemRow = 0, elemColumn = 0; i < 16; i++, leftPoint += 30, elemColumn += 1){
+	function init(){
+		var kill =  new Killer("killer", "killer", 90, 300, 3);
+		kill.createElement();
+		for(var i = 0, leftPoint = 0, topPoint = 0, elemRow = 0, elemColumn = 0; i < 16; i++, leftPoint += 30, elemColumn += 1){
 		if(i == 8){
 			topPoint = 30;
 			leftPoint = 0;
@@ -97,9 +126,9 @@ window.onload = function(){
 		}
 			elem[i] = new Ship(i, "ship", leftPoint, topPoint, elemColumn, elemRow);
 			elem[i].createElement();
-	}
-
-	document.body.addEventListener("keydown",function(event){
+			quantity++;
+		}
+		document.body.addEventListener("keydown",function(event){
 		switch(event.keyCode){
 		case 32 : {
 			// spacebar
@@ -118,4 +147,8 @@ window.onload = function(){
 		break;
 		}
 	});
+	}
+
+	init();
+	
 }
