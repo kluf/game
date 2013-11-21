@@ -56,7 +56,7 @@ window.onload = function(){
 			if(quantity <= 0){
 				alert("you win\n" + "your score" + score);
 				init();
-				kill.destroy();
+				this.destroy();
 			}
 			console.log("scrore" + score);
 		}catch(e){
@@ -65,7 +65,6 @@ window.onload = function(){
 			
 		},
 		this.move = function(direction){
-			// var regExp = /[0-9]+/;
 			var currentLeft = (this.currentElement.style.left).match(this.regExpPixel);
 			if(direction == "left" && currentLeft != 0){
 				this.currentElement.style.left =  0 + currentLeft - 30 + "px";
@@ -95,7 +94,8 @@ window.onload = function(){
 		};
 		this.destroy = function(idn){
 			this.currentElement.parentNode.removeChild(this.currentElement);
-			delete elem[_id];	
+			delete elem[_id];
+			this._id = "undefined"
 			this.updateResult();
 			quantity--;
 		};
@@ -105,28 +105,28 @@ window.onload = function(){
 			}
 		};
 		this.moveDown = function(){
-			var currentTop = (this.currentElement.style.top).match(this.regExpPixel);
-			if(currentTop > 265){
-				alert("you lose");
-				this.init();
-			}else{
-				this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
+			if(this._id != "undefined"){
+				var currentTop = (this.currentElement.style.top).match(this.regExpPixel);
+				if(currentTop > 265){
+					alert("you lose");
+					this.init();
+				}else{
+					this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
+				}
 			}
+			
 		}
-		// this.int = setInterval(this.moveDown, 1500);
 		 this.intervalID = setInterval(
-		     (function(self) {         //Self-executing func which takes 'this' as self
-		         return function() {   //Return a function in the context of 'self'
-		             self.moveDown(); //Thing you wanted to run as non-window 'this'
+		     (function(self) {         
+		         return function() {  
+		             self.moveDown(); 
 		         }
 		     })(this),
-		     this.INTERVAL     //normal interval, 'this' scope not impacted here.
+		     this.INTERVAL     
 	 	); 
-		// setTimeout(this.moveDown, 1500);
+		
 	}
 	Ship.prototype = new Machine();
-
-	
 
 	function init(){
 		var kill =  new Killer("killer", "killer", 90, 300, 3);
