@@ -9,6 +9,8 @@ window.onload = function(){
 		this._id = _id;
 		this._class = _class;
 		this.currentElement = "";
+		this.regExpPixel = /[0-9]+/;
+		this.speed = 2;
 		this.createElement = function(){
 			var domElement = document.createElement("div");
 			domElement.className = this._class + " " + "elem" + this._id;
@@ -63,8 +65,8 @@ window.onload = function(){
 			
 		},
 		this.move = function(direction){
-			var regExp = /[0-9]+/;
-			var currentLeft = (this.currentElement.style.left).match(regExp);
+			// var regExp = /[0-9]+/;
+			var currentLeft = (this.currentElement.style.left).match(this.regExpPixel);
 			if(direction == "left" && currentLeft != 0){
 				this.currentElement.style.left =  0 + currentLeft - 30 + "px";
 				this.column -= 1;
@@ -87,6 +89,7 @@ window.onload = function(){
 		this.column = column;
 		this.row = row;
 		this.score = 150;
+		this.INTERVAL = 1500 / this.speed;
 		this.updateResult = function(){
 			score += this.score;
 		};
@@ -102,12 +105,23 @@ window.onload = function(){
 			}
 		};
 		this.moveDown = function(){
-			console.log(this.startTop);
-			// console.log("yes");
-			// this.startTop = "180px";
-			
+			var currentTop = (this.currentElement.style.top).match(this.regExpPixel);
+			if(currentTop > 265){
+				alert("you lose");
+				this.init();
+			}else{
+				this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
+			}
 		}
-		setInterval(this.moveDown,1500);
+		// this.int = setInterval(this.moveDown, 1500);
+		 this.intervalID = setInterval(
+		     (function(self) {         //Self-executing func which takes 'this' as self
+		         return function() {   //Return a function in the context of 'self'
+		             self.moveDown(); //Thing you wanted to run as non-window 'this'
+		         }
+		     })(this),
+		     this.INTERVAL     //normal interval, 'this' scope not impacted here.
+	 	); 
 		// setTimeout(this.moveDown, 1500);
 	}
 	Ship.prototype = new Machine();
@@ -117,12 +131,27 @@ window.onload = function(){
 	function init(){
 		var kill =  new Killer("killer", "killer", 90, 300, 3);
 		kill.createElement();
-		for(var i = 0, leftPoint = 0, topPoint = 0, elemRow = 0, elemColumn = 0; i < 16; i++, leftPoint += 30, elemColumn += 1){
+		for(var i = 0, leftPoint = 0, topPoint = 0, elemRow = 0, elemColumn = 0; i < 28; i++, leftPoint += 30, elemColumn += 1){
 		if(i == 8){
 			topPoint = 30;
 			leftPoint = 0;
 			elemRow = 1;
 			elemColumn = 0;
+		}else if(i == 16){
+			topPoint = 60;
+			leftPoint = 30;
+			elemRow = 2;
+			elemColumn = 1;
+		}else if(i == 22){
+			topPoint = 90;
+			leftPoint = 60;
+			elemRow = 3;
+			elemColumn = 2;
+		}else if(i == 26){
+			topPoint = 120;
+			leftPoint = 90;
+			elemRow = 4;
+			elemColumn = 3;
 		}
 			elem[i] = new Ship(i, "ship", leftPoint, topPoint, elemColumn, elemRow);
 			elem[i].createElement();
