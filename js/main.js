@@ -1,5 +1,7 @@
 window.onload = function(){
-	var field = document.getElementsByClassName("wrapper")[0],
+	var select = document.getElementsByClassName("speed")[0],
+		opt = document.getElementsByClassName("speed")[0].options,
+		 field = document.getElementsByClassName("wrapper")[0];
 	Machine = function (_id, _class, leftPoint, topPoint, column){
 		this.startLeft = leftPoint;
 		this.column = column;
@@ -10,6 +12,14 @@ window.onload = function(){
 		this._class = _class;
 		this.currentElement = "";
 		this.regExpPixel = /[0-9]+/;
+		this.speed = 1;
+		select.addEventListener("change", function(){
+			for(var i = 0, len = select.length; i < len; i += 1){
+				if(opt[i].selected){
+					this.speed = opt[i].value;
+				};
+			}
+		});
 		this.speed = 2;
 		this.createElement = function(){
 			var domElement = document.createElement("div");
@@ -109,7 +119,9 @@ window.onload = function(){
 				var currentTop = (this.currentElement.style.top).match(this.regExpPixel);
 				if(currentTop > 265){
 					alert("you lose");
-					this.init();
+					clearInterval(this.intervalID);
+					this.destroy();
+					init();
 				}else{
 					this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
 				}
