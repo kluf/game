@@ -55,7 +55,6 @@ window.onload = function(){
                 }
                 if(quantity <= 0){
                     alert("you win\n" + "your score" + score);
-                    location.reload();
                 }
             // console.log("scrore" + score);
         }   catch(e){
@@ -110,6 +109,7 @@ window.onload = function(){
                 if(currentTop > 265){
                     alert("you lose");
                     this.destroy();
+                    location.reload();
                 }else{
                     this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
                 }
