@@ -56,7 +56,6 @@ window.onload = function(){
                 if(quantity <= 0){
                     alert("you win\n" + "your score" + score);
                 }
-            // console.log("scrore" + score);
         }   catch(e){
             // console.log(e);
         }
@@ -108,7 +107,7 @@ window.onload = function(){
                 var currentTop = (this.currentElement.style.top).match(this.regExpPixel);
                 if(currentTop > 265){
                     alert("you lose");
-                    this.destroy();
+                    destroyAll();
                     location.reload();
                 }else{
                     this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
@@ -126,6 +125,13 @@ window.onload = function(){
         
     }
     Ship.prototype = new Machine();
+
+    function destroyAll() {
+        for (value in elem) {
+            elem[value].destroy();
+        }
+        kill.destroy();
+    }
 
     function init(){
         len = opt.length - 1;
