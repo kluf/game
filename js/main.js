@@ -2,7 +2,10 @@ window.onload = function(){
     var select = document.getElementsByClassName("speed")[0],
         opt = document.getElementsByClassName("speed")[0].options,
         field = document.getElementsByClassName("wrapper")[0],
-        start = document.getElementsByClassName("start")[0];
+        start = document.getElementsByClassName("start")[0],
+        score = 0,
+        quantity = 0,
+        elem = {};
     Machine = function (_id, _class, leftPoint, topPoint, column){
         this.startLeft = leftPoint;
         this.column = column;
@@ -25,9 +28,7 @@ window.onload = function(){
         }
     },
     Machine.prototype.speed = 1;
-    score = 0,
-    quantity = 0,
-    elem = {};
+
     var Killer = function(_id, _class, leftPoint, topPoint, column){
         this._id = _id;
         this._class = _class;
@@ -36,30 +37,26 @@ window.onload = function(){
         this.column = 3;
         this.destroy = function(){
             this.currentElement.parentNode.removeChild(this.currentElement);
-            delete this;    
         }
-        this.shut = function(){         
-            try{
-                var tempArr = "";
-                var targetShip = "";
-                for(var el in elem){
-                    if(this.column == elem[el].column){
-                        tempArr = elem[el].row;
-                        targetShip = elem[el].getId(this.column,tempArr);
-                    }
+        this.shut = function(){   
+            var tempArr,
+            targetShip = [],
+            el;
+            for(el in elem){
+                if(this.column == elem[el].column){
+                    tempArr = elem[el].row;
+                    targetShip.push(elem[el].getId(this.column,tempArr));
                 }
-                for(var el in elem){
-                    if(targetShip == elem[el]._id){
-                        elem[el].destroy();
-                    }
-                }
-                if(quantity <= 0){
-                    alert("you win\n" + "your score" + score);
-                }
-        }   catch(e){
-            // console.log(e);
-        }
-            
+            }
+            targetShip.sort(function(a,b) {
+                return b - a;
+            });
+            if (targetShip.length !== 0) {
+                elem[targetShip.shift()].destroy();
+            }
+            if (quantity <= 0) {
+                alert("you win\n" + "your score" + score);
+            }
         },
         this.move = function(direction){
             var currentLeft = (this.currentElement.style.left).match(this.regExpPixel);
@@ -95,7 +92,6 @@ window.onload = function(){
             this._id = "undefined"
             this.updateResult();
             quantity--;
-            console.log(intervalID);
         };
         this.getId = function(column, row){
             if(this.column == column && this.row == row){
@@ -122,19 +118,24 @@ window.onload = function(){
              })(this),
              INTERVAL     
         ); 
-        
-    }
+    };
+
     Ship.prototype = new Machine();
 
     function destroyAll() {
         for (value in elem) {
             elem[value].destroy();
         }
-        kill.destroy();
-    }
+        kill.destroy("killer");
+    };
 
     function init(){
-        len = opt.length - 1;
+        var len = opt.length - 1,
+        i = 0,
+        leftPoint = 0,
+        topPoint = 0,
+        elemColumn = 0,
+        elemRow = 0;
         for (len; len >= 0; len -= 1) {
             if (opt[len].selected) {
                 Machine.prototype.speed = opt[len].value;
@@ -143,31 +144,32 @@ window.onload = function(){
         start.removeEventListener("click",init);
         var kill =  new Killer("killer", "killer", 90, 300, 3);
         kill.createElement();
-        for(var i = 0, leftPoint = 0, topPoint = 0, elemRow = 0, elemColumn = 0; i < 28; i++, leftPoint += 30, elemColumn += 1){
-        if(i == 8){
-            topPoint = 30;
-            leftPoint = 0;
-            elemRow = 1;
-            elemColumn = 0;
-        }else if(i == 16){
-            topPoint = 60;
-            leftPoint = 30;
-            elemRow = 2;
-            elemColumn = 1;
-        }else if(i == 22){
-            topPoint = 90;
-            leftPoint = 60;
-            elemRow = 3;
-            elemColumn = 2;
-        }else if(i == 26){
-            topPoint = 120;
-            leftPoint = 90;
-            elemRow = 4;
-            elemColumn = 3;
-        }
-            elem[i] = new Ship(i, "ship", leftPoint, topPoint, elemColumn, elemRow);
-            elem[i].createElement();
-            quantity++;
+
+        for (i, leftPoint, topPoint, elemRow, elemColumn; i < 28; i++, leftPoint += 30, elemColumn += 1){
+            if (i == 8) {
+                topPoint = 30;
+                leftPoint = 0;
+                elemRow = 1;
+                elemColumn = 0;
+            } else if (i == 16) {
+                topPoint = 60;
+                leftPoint = 30;
+                elemRow = 2;
+                elemColumn = 1;
+            } else if (i == 22) {
+                topPoint = 90;
+                leftPoint = 60;
+                elemRow = 3;
+                elemColumn = 2;
+            } else if (i == 26) {
+                topPoint = 120;
+                leftPoint = 90;
+                elemRow = 4;
+                elemColumn = 3;
+            }
+        elem[i] = new Ship(i, "ship", leftPoint, topPoint, elemColumn, elemRow);
+        elem[i].createElement();
+        quantity++;
         }
         document.body.addEventListener("keydown",function(event){
         switch(event.keyCode){
