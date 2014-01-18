@@ -1,4 +1,5 @@
-window.onload = function(){
+// window.onload = function(){
+(function () {
     var select = document.getElementsByClassName("speed")[0],
         opt = document.getElementsByClassName("speed")[0].options,
         field = document.getElementsByClassName("wrapper")[0],
@@ -104,7 +105,6 @@ window.onload = function(){
                 if(currentTop > 265){
                     alert("you lose");
                     destroyAll();
-                    location.reload();
                 }else{
                     this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
                 }
@@ -126,7 +126,8 @@ window.onload = function(){
         for (value in elem) {
             elem[value].destroy();
         }
-        kill.destroy("killer");
+        location.reload();
+        // kill.destroy("killer");
     };
 
     function init(){
@@ -192,4 +193,5 @@ window.onload = function(){
     });
     }
     start.addEventListener("click",init);
-}
+// }
+}());
