@@ -1,5 +1,5 @@
-// window.onload = function(){
-(function () {
+var Invader;
+(Invader = function Invader() {
     var select = document.getElementsByClassName("speed")[0],
         opt = document.getElementsByClassName("speed")[0].options,
         field = document.getElementsByClassName("wrapper")[0],
@@ -39,7 +39,7 @@
         this.destroy = function(){
             this.currentElement.parentNode.removeChild(this.currentElement);
         }
-        this.shut = function(){   
+        this.shut = function(){
             var tempArr,
             targetShip = [],
             el;
@@ -57,6 +57,7 @@
             }
             if (quantity <= 0) {
                 alert("you win\n" + "your score" + score);
+                window.location.reload();
             }
         },
         this.move = function(direction){
@@ -70,7 +71,7 @@
             }else{
                 throw "Wrong direction";
             }
-            
+
         }
     }
     Killer.prototype = new Machine();
@@ -106,18 +107,18 @@
                     alert("you lose");
                     destroyAll();
                 }else{
-                    this.currentElement.style.top = parseInt(currentTop) + 15 + "px"; 
+                    this.currentElement.style.top = parseInt(currentTop) + 15 + "px";
                 }
             }
         };
         intervalID = setInterval(
-             (function(self) {         
-                 return function() {  
-                     self.moveDown(); 
+             (function(self) {
+                 return function() {
+                     self.moveDown();
                  }
              })(this),
-             INTERVAL     
-        ); 
+             INTERVAL
+        );
     };
 
     Ship.prototype = new Machine();
@@ -193,5 +194,6 @@
     });
     }
     start.addEventListener("click",init);
-// }
 }());
+
+window.addEventListener('onload', Invader);
